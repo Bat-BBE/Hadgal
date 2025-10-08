@@ -1,15 +1,12 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 
-
-interface Params {
-  params: { id: string };
-}
-
-export async function GET(request: NextRequest, context: Promise<{ params: { id: string } }>) {
-  const { params } = await context;
-  const id = await params.id;
+export async function GET(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
 
   try {
     const filePath = path.join(process.cwd(), "data", "organizations.json");
