@@ -78,6 +78,9 @@ export default function SavingsPage() {
         : p
     );
     setProjects(updatedProjects);
+
+    
+
     toast.success("Хөрөнгө оруулалт амжилттай хийгдлээ!");
     setShowSuccess(true);
   };
