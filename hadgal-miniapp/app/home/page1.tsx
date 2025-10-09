@@ -28,9 +28,6 @@ export default function Home() {
   const handleClick1 = () => {
     router.push(`${config.apiBaseUrl}/charity`);
   };
-  const handleClick2 = () => {
-    router.push(`${config.apiBaseUrl}/greenasset`);
-  }
 
   const handleGoToSavings = (id: string) => {
     router.push(`/savings/${id}`);
@@ -80,7 +77,6 @@ export default function Home() {
         </button>
         
         <button 
-          onClick={handleClick2} 
           className="flex flex-col items-center justify-center bg-white rounded-xl shadow-lg p-4 w-full max-w-32 h-28 hover:shadow-xl hover:scale-105 transition-all duration-300 border border-emerald-100"
         >
           <div className="p-2 mb-2">

@@ -15,7 +15,8 @@ export default function SavingsPage() {
   const userId = useUserId();
   const { loadAll } = useProjects();
   const { create } = useLocalSavings();
-  const { addTokens, getBalance } = useLocalTokens();
+  const { addTokens } = useLocalTokens();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
@@ -50,9 +51,7 @@ export default function SavingsPage() {
 
   const handleSubmit = () => {
     if (!userId || !isFormValid || !selectedProject) return;
-
     const investAmount = Number(amount);
-
     const newSaving = {
       id: Date.now().toString(),
       userId,
@@ -80,7 +79,7 @@ export default function SavingsPage() {
     );
     setProjects(updatedProjects);
     toast.success("Хөрөнгө оруулалт амжилттай хийгдлээ!");
-    router.push("/test");
+    setShowSuccess(true);
   };
 
   return (
@@ -104,11 +103,11 @@ export default function SavingsPage() {
                 setSelectedProjectId(proj.id);
                 resetAll();
               }}
-              className="relative rounded-2xl overflow-hidden shadow-lg hover:scale-105 hover:shadow-emerald-300/40 transition transform duration-300  border border-white/20 p-4 bg-black/20"
+              className="relative rounded-2xl overflow-hidden shadow-lg hover:scale-105 hover:shadow-emerald-300/40 transition transform duration-300 p-4 bg-white/20"
             >
               <Lottie animationData={greenAnimation} loop className="w-full h-15" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-white font-bold text-lg text-center px-4 py-2 rounded-xl bg-white/20">
+                <span className="text-white font-bold text-lm text-center px-4 py-2 rounded-xl bg-black/60">
                   {proj.name}
                 </span>
               </div>
@@ -183,7 +182,7 @@ export default function SavingsPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid}
-                className={`w-full p-3 rounded-lg text-lg font-semibold transition ${
+                className={`w-full p-3 rounded-lg text-xl font-bold transition ${
                   isFormValid
                     ? "bg-emerald-600 text-white hover:bg-emerald-700"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -195,12 +194,40 @@ export default function SavingsPage() {
               <button
                 type="button"
                 onClick={() => setSelectedProjectId(null)}
-                className="w-full p-3 rounded-lg text-lg font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                className="w-full p-3 rounded-lg text-xl font-bold bg-gray-300 text-emerald-900 hover:bg-gray-400 transition"
               >
                 Болих
               </button>
             </div>
           </div>
+          {showSuccess && (
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/60">
+            <div className="bg-white rounded-2xl shadow-xl p-6 w-80 text-center">
+              <Lottie
+                animationData={greenAnimation}
+                loop={false}
+                className="w-40 h-40 mx-auto"
+              />
+              <h2 className="text-xl font-bold text-emerald-700 mt-4">
+                Талархал
+              </h2>
+              <p className="text-gray-700 mt-2 leading-relaxed text-center">
+                🌿 Таны хөрөнгө оруулалт зөвхөн тоо биш — байгальд үлдэх бодит өөрчлөлт юм.
+                Таны дэмжлэгээр илүү цэвэр агаар, тогтвортой ирээдүйг бид хамтдаа бүтээж байна.
+                Танд баярлалаа! 🌿 🌱💚
+              </p>
+              <button
+                onClick={() => {
+                  setShowSuccess(false);
+                  router.push("/home");
+                }}
+                className="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold w-full"
+              >
+                Үргэлжлүүлэх
+              </button>
+            </div>
+          </div>
+        )}
         </>
       )}
     </div>

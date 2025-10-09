@@ -110,14 +110,13 @@ export default function Home() {
 
       <div className="bg-white rounded-2xl p-5 w-full shadow-lg">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-bold text-lg text-gray-800">Миний өгөөж</h2>
+          <h2 className="font-semibold text-lm text-gray-800">Миний өгөөж</h2>
           {savings.length > 0 && (
             <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium">
               {savings.length} ширхэг
             </div>
           )}
         </div>
-
         {loading ? (
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
@@ -139,8 +138,10 @@ export default function Home() {
           </div>
         ) : (
           <>
-          <div className="flex flex-row justify-between bg-emerald-50 rounded-xl mb-2">
-            <div className="p-4 border border-r-white ">
+          <div className="flex flex-row justify-between bg-emerald-50 rounded-xl mb-2 cursor-pointer hover:bg-emerald-100 transition"
+            onClick={() => router.push("/green/overview")}
+            >
+            <div className="flex-2 p-4">
               <p className="text-gray-600 text-sm">Нийт хөрөнгө оруулалт</p>
               <p className="text-lg font-bold text-emerald-700">
                 ₮
@@ -149,24 +150,28 @@ export default function Home() {
                 )}
               </p>
             </div>
-            <div className="p-4">
+            <div className="w-px bg-gray-300 opacity-70 my-3"></div>
+            <div className="flex-1 p-4">
               <p className="text-gray-600 text-sm">Нийт ашиг</p>
               <p className="text-lg font-bold text-emerald-700">
                 ₮
                 {new Intl.NumberFormat("mn-MN").format(
-                  savings.reduce((sum, s) => sum + s.amount, 0)
+                  savings.reduce(
+                    (sum, s) => sum + (s.amount * (s.interest / 100)),
+                    0
+                  )
                 )}
               </p>
             </div>
           </div>
 
             <div className="space-y-2">
-              <h2 className="font-bold text-lg text-gray-800">Миний хөрөнгө</h2>
+              <h2 className="font-bold text-lm text-gray-800">Миний хөрөнгө</h2>
               {savings.map((s) => (
                 <div
                   key={s.id}
                   onClick={() => router.push(`/green/${s.id}`)}
-                  className="flex flex-col p-4 border border-gray-100 rounded-xl hover:shadow-md hover:border-emerald-100 transition-all duration-300 bg-white"
+                  className="flex flex-col p-4 rounded-xl hover:shadow-md hover:border-emerald-100 transition-all duration-300 border border-gray-200"
                 >
                   <div className="flex flex-row justify-between items-center mb-3">
                     <div>

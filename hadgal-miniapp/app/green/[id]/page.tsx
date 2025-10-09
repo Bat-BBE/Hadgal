@@ -5,10 +5,10 @@ import Image from "next/image";
 import Lottie from "lottie-react";
 import greenAnimation from "@/public/animations/green.json";
 import { useUserId } from "@/app/hooks/useUserId";
+import { useLocalSavings, Saving } from "@/app/hooks/useLocalSaving";
 import { useProjects } from "@/app/hooks/useProjects";
 import { useLocalTokens } from "@/app/hooks/useLocalTokens";
 import { Projects } from "@/app/type/Project";
-import { useLocalSavings, Saving } from "@/app/hooks/useLocalSavings";
 
 export default function GreenSavingDetail() {
   const { id } = useParams();
@@ -27,13 +27,9 @@ export default function GreenSavingDetail() {
     if (!userId || !id) return;
 
     const savingData = getById(userId, id as string);
-    console.log(savingData);
     setSaving(savingData ?? null);
 
-    loadProjects().then((res) => {
-      console.log("Loaded projects:", res);
-      setProjects(res);
-    });
+    loadProjects().then((res) => setProjects(res));
     setTokens(getBalance(userId));
   }, [id, userId, getById, loadProjects, getBalance]);
 
@@ -48,44 +44,60 @@ export default function GreenSavingDetail() {
       maximumFractionDigits: 2,
     })}`;
 
-  if (!saving) {
+  if (!saving || !selectedProject) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-800 p-6 text-white">
         <button onClick={() => router.back()} className="mb-4">
           <Image src="/images/arrow.png" alt="back" width={22} height={22} />
         </button>
-        <p>Хадгаламж олдсонгүй.</p>
+        <p>Хөрөнгө оруулалтын мэдээлэл олдсонгүй.</p>
       </div>
     );
   }
 
+  const budget = selectedProject.budget ?? 0;
+  const investedPercent = budget ? (saving.amount / budget) * 100 : 0;
+  const monthlyReturn = ((saving.amount * Number(saving.interest || 0)) / 100) / 12;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-800 p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          className="text-white/90 hover:text-white transition"
-          onClick={() => router.back()}
-        >
+    <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-800 p-6 text-white">
+      <div className="flex items-center gap-3 mb-3">
+        <button onClick={() => router.back()}>
           <Image src="/images/arrow.png" alt="back" width={22} height={22} />
         </button>
-        <h1 className="text-2xl font-bold text-white">Миний хөрөнгө</h1>
+        <h1 className="text-2xl font-bold">Миний хөрөнгө</h1>
       </div>
 
-      <div className="bg-white rounded-2xl p-5 shadow-lg mb-6">
+      <div className="bg-white/85 rounded-2xl p-5 shadow-lg mb-3 text-gray-800">
         <h2 className="text-xl font-bold text-emerald-800">{saving.type}</h2>
         <p className="mt-2 text-gray-700">{saving.description}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <InfoCard label="Миний хөрөнгө" value={fmtMoney(saving.amount)} />
-        <InfoCard label="Жилийн өгөөж (IRR)" value={`${saving.interest}%`} />
-        <InfoCard
-          label="Төслийн нийт хөрөнгө"
-          value={fmtMoney(selectedProject?.budget)}
-        />
+      <div className="bg-white/3 p-2 rounded-xl bg-white/30">
+        <div className="grid grid-row-1 sm:grid-cols-3 gap-1 mb-3">
+          <InfoCard label="Миний хөрөнгө" value={fmtMoney(saving.amount)} />
+          <InfoCard label="Жилийн өгөөж (IRR)" value={`${saving.interest}%`} />
+          <InfoCard label="Төслийн нийт хөрөнгө" value={fmtMoney(budget)} />
+          <InfoCard label="Сарын өгөөж" value={fmtMoney(monthlyReturn)} />
+          <InfoCard
+            label="Үлдэж буй хөрөнгө"
+            value={fmtMoney(budget - saving.amount)}
+          />
+          <div className="bg-white/5 rounded-2xl p-5 shadow-lg mt-2 text-gray-300">
+            <p className="mb-2 font-medium">Миний хувь нэмэр</p>
+            <div className="w-full bg-white rounded-full h-4 overflow-hidden">
+                <div
+                  className="h-4 bg-emerald-600"
+                  style={{ width: `${investedPercent}%` }}
+                />
+            </div>
+          <p className="mt-2 text-sm text-gray-300">
+            {investedPercent.toFixed(1)}% санхүүжилтэнд оролцсон
+          </p>
+        </div>
       </div>
-
-      <div className="rounded-2xl overflow-hidden shadow-lg">
+      </div>
+      <div className="overflow-hidden">
         <Lottie animationData={greenAnimation} loop className="w-full h-60" />
       </div>
     </div>
@@ -94,9 +106,9 @@ export default function GreenSavingDetail() {
 
 function InfoCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-white px-4 py-5 shadow text-center">
-      <p className="text-gray-600 text-sm">{label}</p>
-      <p className="text-xl font-bold text-emerald-800 mt-2">{value}</p>
+    <div className="flex flex-row justify-between px-4 py-2 border-b-1">
+      <p className="text-gray-300 text-sm mt-1">{label}</p>
+      <p className="text-lm font-semibold text-white mt-1">{value}</p>
     </div>
   );
 }
