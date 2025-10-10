@@ -99,7 +99,7 @@ export default function Home() {
         <div className="flex-1 ml-1">
           <p className="font-bold text-xl mb-1">Ногоон хөрөнгө ✨</p>
           <p className="font-normal text-white/90 text-sm mb-4">
-            Өнөөдрөөс эхлээд ирээдүйдээ хөрөнгө оруулья!
+            Өнөөдрөөс эхлээд ирээдүйдээ хөрөнгө оруулъя!
           </p>
           <button
             onClick={handleClick}
