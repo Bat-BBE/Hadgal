@@ -106,11 +106,11 @@ export default function SavingsPage() {
                 setSelectedProjectId(proj.id);
                 resetAll();
               }}
-              className="relative rounded-2xl overflow-hidden shadow-lg hover:scale-105 hover:shadow-emerald-300/40 transition transform duration-300 p-4 bg-white/20"
+              className="relative rounded-2xl overflow-hidden shadow-lg hover:scale-105 hover:shadow-emerald-300/40 transition transform duration-300 p-4 bg-white/5"
             >
               <Lottie animationData={greenAnimation} loop className="w-full h-15" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-white font-bold text-lm text-center px-4 py-2 rounded-xl bg-black/60">
+                <span className="text-white font-bold text-lg text-center px-4 py-2 rounded-xl bg-black/30">
                   {proj.name}
                 </span>
               </div>

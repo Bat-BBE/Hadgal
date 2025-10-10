@@ -69,15 +69,27 @@ export default function Home() {
         </button>
       </div>
 
-      <div className="flex justify-between mb-3 space-x-3">
+      <div className="flex justify-center mb-4">
         <button
           onClick={handleClick1}
-          className="flex flex-row bg-white rounded-xl shadow-lg p-4 w-full h-20 hover:shadow-xl hover:scale-105 transition-all duration-300 border border-emerald-100"
+          className="
+            flex items-center gap-4 
+            w-full h-24 max-w-md
+            bg-gradient-to-r from-white/90 to-white/60
+            backdrop-blur-md 
+            border border-emerald-100 
+            rounded-2xl 
+            shadow-lg
+            hover:shadow-2xl 
+            hover:scale-[1.03] 
+            active:scale-95
+            transition-all duration-300
+          "
         >
-          <div className="p-2">
-            <Image src="/images/kind.png" alt="icon" width={40} height={40} />
+          <div className="ml-3">
+            <Image src="/images/kind.png" alt="icon" width={48} height={48} />
           </div>
-          <span className="text-xl font-bold text-gray-800 mt-2 ml-7">
+          <span className="text-2xl font-bold text-emerald-900">
             Сайн үйлс
           </span>
         </button>
@@ -156,10 +168,17 @@ export default function Home() {
               <p className="text-lg font-bold text-emerald-700">
                 ₮
                 {new Intl.NumberFormat("mn-MN").format(
-                  savings.reduce(
-                    (sum, s) => sum + (s.amount * (s.interest / 100)),
-                    0
-                  )
+                  savings.reduce((sum, s) => {
+                    const openedDate = new Date(s.openedAt);
+                    const now = new Date();
+                    const diffInDays = Math.floor(
+                      (now.getTime() - openedDate.getTime()) / (1000 * 60 * 60 * 24)
+                    );
+                    if (diffInDays >= 30) {
+                      return sum + (s.amount * (s.interest / 100));
+                    }
+                    return sum;
+                  }, 0)
                 )}
               </p>
             </div>

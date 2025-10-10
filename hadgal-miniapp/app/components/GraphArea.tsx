@@ -41,11 +41,18 @@ export default function GraphArea({ data }: GraphAreaProps) {
   }, [mergedData]);
 
   const totalProfit = useMemo(() => {
-    return mergedData.reduce(
-      (sum, item) => sum + (item.value * item.interest) / 100,
-      0
-    );
-  }, [mergedData]);
+    return savings.reduce((sum, s) => {
+      const openedDate = new Date(s.openedAt);
+      const now = new Date();
+      const diffInDays = Math.floor(
+        (now.getTime() - openedDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      if (diffInDays >= 30) {
+        return sum + (s.amount * (s.interest / 100));
+      }
+      return sum;
+    }, 0);
+  }, [savings]);
 
   return (
     <div className="my-2 bg-white p-3 rounded-xl">
@@ -55,11 +62,10 @@ export default function GraphArea({ data }: GraphAreaProps) {
       <div className="mb-3">
         Нийт ашиг: ₮{totalProfit.toLocaleString("mn-MN")}
       </div>
-
       <hr />
       <div>
         <p className="text-lg mb-3 fo">Хөрөнгө оруулалтын хуваарилалт</p>
-        <div className="relative z-10 w-80 max-w-sm mx-auto overflow-visible aspect-square">
+        <div className="relative z-10 w-60 max-w-sm mx-auto overflow-visible aspect-square">
           <PieChart data={mergedData.filter((d) => d.value > 0)} />
         </div>
       </div>

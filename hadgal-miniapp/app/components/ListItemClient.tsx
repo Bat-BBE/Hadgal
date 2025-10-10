@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { FaStar, FaSearch } from "react-icons/fa";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import DonationModal from "./DonationModal";
 
 export default function ListItemClient({
   data,
@@ -12,12 +12,10 @@ export default function ListItemClient({
   data: any[];
   url: string;
 }) {
-  
-  const [items, setItems] = useState<Array<any>>(
-    Array.isArray(data) ? data : []
-  );
+  const [items, setItems] = useState<Array<any>>(Array.isArray(data) ? data : []);
   const [favorites, setFavorites] = useState<{ [key: number]: boolean }>({});
   const [query, setQuery] = useState("");
+  const [selectedOrg, setSelectedOrg] = useState<any | null>(null);
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) => {
@@ -40,13 +38,12 @@ export default function ListItemClient({
   };
 
   const filteredItems = (Array.isArray(items) ? items : []).filter((org) =>
-    String(org?.name || "")
-      .toLowerCase()
-      .includes(query.toLowerCase())
+    String(org?.name || "").toLowerCase().includes(query.toLowerCase())
   );
 
   return (
     <div className="mx-2">
+      {/* 🔍 Хайлт */}
       <div className="flex items-center bg-white p-2 rounded-md shadow-sm mt-2 mb-4">
         <input
           type="text"
@@ -76,45 +73,36 @@ export default function ListItemClient({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="flex flex-col bg-white mt-3 px-2 py-4 rounded-sm text-black"
+                className="flex flex-col bg-white/90 mt-3 px-2 py-4 rounded-sm text-black cursor-pointer"
+                onClick={() => setSelectedOrg(org)} 
               >
                 <div className="flex items-center">
                   <div
-                    onClick={() => toggleFavorite(org.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(org.id);
+                    }}
                     className="text-yellow-700 mx-2 cursor-pointer transition-transform duration-300"
                   >
-                    <div
-                      className={`transition-transform duration-300 ${
-                        isFavorited ? "scale-110" : ""
-                      }`}
-                    >
-                      <FaStar
-                        color={isFavorited ? "yellow" : "gray"}
-                        size={20}
-                      />
-                    </div>
+                    <FaStar
+                      color={isFavorited ? "yellow" : "gray"}
+                      size={20}
+                    />
                   </div>
 
-                  <Link href={`/${url}/${org.id}`} className="hover:underline">
-                    {org.name}
-                  </Link>
+                  <p className="font-medium">{org.name}</p>
                 </div>
-
-                {org.budget && (
-                  <div className="relative mt-3 w-full h-2 bg-green-200 rounded-full transition-all">
-                    <div
-                      className="absolute h-2 bg-green-400 rounded-full transition-all"
-                      style={{
-                        width: `${(org.current / org.budget) * 100 || 0}%`,
-                      }}
-                    ></div>
-                  </div>
-                )}
               </motion.li>
             );
           })}
         </AnimatePresence>
       </ul>
+      {selectedOrg && (
+        <DonationModal
+          organization={selectedOrg}
+          onCloseAction={() => setSelectedOrg(null)}
+        />
+      )}
     </div>
   );
 }

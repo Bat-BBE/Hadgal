@@ -61,14 +61,14 @@ export default function GreenSavingDetail() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-800 p-6 text-white">
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-4"> 
         <button onClick={() => router.back()}>
           <Image src="/images/arrow.png" alt="back" width={22} height={22} />
         </button>
-        <h1 className="text-2xl font-bold">Миний хөрөнгө</h1>
+        <h1 className="text-2xl font-bold mt-1">Миний хөрөнгө</h1>
       </div>
 
-      <div className="bg-white/85 rounded-2xl p-5 shadow-lg mb-3 text-gray-800">
+      <div className="bg-white rounded-xl p-5 shadow-lg mb-3 text-gray-800">
         <h2 className="text-xl font-bold text-emerald-800">{saving.type}</h2>
         <p className="mt-2 text-gray-700">{saving.description}</p>
       </div>
